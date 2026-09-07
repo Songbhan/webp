@@ -1,0 +1,64 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>슈렉</title>
+
+    <style>
+        body {
+            background-color: #c991dc;
+            color: blue;
+            margin-left: 40px;
+            margin-right: 40px;
+        }
+
+        h3 {
+            color: greenyellow;
+            text-align: center;
+        }
+
+        hr {
+            height: 5px;
+            background-color: gray;
+            border: solid gray;
+        }
+
+        span {
+            color: blue;
+            font-size: 20px;
+        }
+
+        #fig {
+            width: 300px;
+            display: none;
+        }
+    </style>
+
+    <script>
+        function show() {
+            document.getElementById("fig").style.display = "block";
+        }
+
+        function hide() {
+            document.getElementById("fig").style.display = "none";
+        }
+    </script>
+</head>
+
+<body>
+
+    <h3 onmouseover="show()" onmouseout="hide()">슈렉</h3>
+
+    <hr>
+
+    <div>
+        <img id="fig" src="슈렉.jpeg" alt="슈렉">
+    </div>
+
+    저는 대한민국에서 태어나서 컴퓨터 공학을 전공하는 학생입니다.
+    제가 제일 좋아하는 과목은 <span>웹프로그래밍</span>이고,
+    그 중에서도 <span>자바스크립트</span>를 제일 잘합니다.
+
+</body>
+</html>
