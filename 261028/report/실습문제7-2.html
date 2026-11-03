@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>이미지 회전</title>
+
+<script>
+    let angle = 0;
+
+    function rotate(obj) {
+        angle += 90;
+        obj.style.transform = "rotate(" + angle + "deg)";
+    }
+</script>
+</head>
+
+<body>
+<h3>클릭하면 90도 회전합니다.</h3>
+<hr>
+
+
+<img src="spongebob.png" width="150"
+     onclick="rotate(this)">
+
+</body>
+</html>

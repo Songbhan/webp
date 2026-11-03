@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>갬블링 게임</title>
+
+    <style>
+        span {
+            display: inline-block;
+            width: 40px;
+            font-size: 40px;
+            color: blue;
+            font-style: italic;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        div {
+            display: inline-block;
+            border: 1px solid gray;
+            background-color: bisque;
+            padding: 5px;
+        }
+
+        #result {
+            color: blue;
+            font-style: italic;
+            cursor: pointer;
+        }
+    </style>
+
+    <script>
+        let count = 0;
+
+        function play(obj) {
+            if (count >= 3) {
+                return;
+            }
+
+            let n = Math.floor(Math.random() * 3);
+            obj.innerHTML = n;
+
+            obj.onclick = null;
+            count++;
+
+            if (count == 3) {
+                let spans = document.getElementsByTagName("span");
+
+                let a = spans[0].innerHTML;
+                let b = spans[1].innerHTML;
+                let c = spans[2].innerHTML;
+
+                let result = document.getElementById("result");
+
+                if (a == b && b == c) {
+                    result.innerHTML = "Success(click here to do again)";
+                } else {
+                    result.innerHTML = "fail(click here to do again)";
+                }
+            }
+        }
+
+        function restart() {
+            let spans = document.getElementsByTagName("span");
+
+            for (let i = 0; i < spans.length; i++) {
+                spans[i].innerHTML = "0";
+                spans[i].onclick = function () {
+                    play(this);
+                };
+            }
+
+            count = 0;
+            document.getElementById("result").innerHTML = "";
+        }
+    </script>
+</head>
+
+<body>
+    <h3>갬블링 게임</h3>
+
+    <p>
+        각 숫자를 클릭하면 0에서 2사이의 난수로 바뀝니다.
+        모두 같은 수가 나오면 승리합니다.
+    </p>
+    <hr>
+
+    <div>
+        <span onclick="play(this)">0</span>
+        <span onclick="play(this)">0</span>
+        <span onclick="play(this)">0</span>
+    </div>
+
+    <p id="result" onclick="restart()"></p>
+
+</body>
+
+</html>
