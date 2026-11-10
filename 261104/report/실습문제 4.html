@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>이미지 커서 만들기</title>
+<style>body { font-family: sans-serif; } html { min-height:100%; cursor:none; } #cursor { position:absolute; display:none; width:30px; height:30px; pointer-events:none; z-index:1000; }</style>
+</head>
+<body>
+<h3>이미지 커서 만들기</h3>
+<hr>
+<p>마우스를 움직이면 이미지로 만든 커서가 마우스를 따라 다닙니다.</p>
+<div id="cursor" aria-hidden="true"><img src="media/puppy.png" alt="" width="30" height="30"></div>
+<script>
+document.onmousemove = function (e) {
+    const cursor = document.getElementById('cursor');
+    cursor.style.left = e.pageX + 'px';
+    cursor.style.top = e.pageY + 'px';
+    cursor.style.display = 'block';
+};
+document.documentElement.onmouseleave = function () {
+    document.getElementById('cursor').style.display = 'none';
+};
+</script>
+</body>
+</html>
