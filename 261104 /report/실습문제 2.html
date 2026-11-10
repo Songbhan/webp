@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>라디오 버튼을 클릭하면 이미지를 출력합니다.</title>
+<style>body { font-family: sans-serif; } img { width:100px; height:130px; object-fit:contain; }</style>
+</head>
+<body>
+<h3>라디오 버튼을 클릭하면 이미지를 출력합니다.</h3>
+<hr>
+<form>
+<label><input type="radio" name="fruit" value="media/banana.png">바나나</label>
+<label><input type="radio" name="fruit" value="media/mango.png">망고</label>
+<label><input type="radio" name="fruit" value="media/apple.png" checked>사과</label>
+</form>
+<img id="fruitimage" src="media/apple.png" alt="사과">
+<script>
+for (const radio of document.getElementsByName('fruit')) {
+    radio.onchange = function () {
+        document.getElementById('fruitimage').src = this.value;
+        document.getElementById('fruitimage').alt = this.parentElement.textContent.trim();
+    };
+}
+</script>
+</body>
+</html>

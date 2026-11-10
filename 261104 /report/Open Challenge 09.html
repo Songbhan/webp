@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>마우스 클릭 연습</title>
+<style>body { font-family: sans-serif; } table { border-collapse:collapse; table-layout:fixed; } td { width:50px; height:50px; border:1px solid navy; padding:0; text-align:center; } td img { object-fit:contain; vertical-align:middle; cursor:pointer; }</style>
+</head>
+<body>
+<h3>마우스 클릭 연습</h3>
+<hr>
+<table id="grid" aria-label="10행 10열 클릭 연습"></table>
+<script>
+const grid = document.getElementById('grid');
+for (let row = 0; row < 10; row++) {
+    const tr = grid.insertRow();
+    for (let col = 0; col < 10; col++) tr.insertCell();
+}
+const cells = Array.from(grid.getElementsByTagName('td'));
+const image = document.createElement('img');
+image.src = 'media/puppy.png';
+image.alt = '클릭하면 다른 셀로 이동';
+image.width = 45; image.height = 45;
+image.tabIndex = 0;
+image.setAttribute('role', 'button');
+let current = -1;
+function moveImage() {
+    let next;
+    do { next = Math.floor(Math.random() * cells.length); } while (next === current);
+    cells[next].appendChild(image);
+    current = next;
+}
+image.onclick = moveImage;
+image.onkeydown = function (e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); moveImage(); image.focus(); }
+};
+moveImage();
+</script>
+</body>
+</html>

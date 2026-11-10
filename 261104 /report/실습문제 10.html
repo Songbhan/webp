@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>계산기 만들기</title>
+<style>body { font-family: sans-serif; } #calculator { width:360px; max-width:100%; } #display { width:100%; box-sizing:border-box; } table { width:100%; text-align:center; } td { width:25%; } button { width:65px; max-width:100%; margin:2px; }</style>
+</head>
+<body>
+<h3>계산기 만들기</h3>
+<hr>
+<div id="calculator"><input id="display" type="text" value="0" readonly aria-label="계산식 및 결과">
+<table>
+<tr><td><button type="button">BACK</button></td><td><button type="button">CE</button></td><td><button type="button">C</button></td><td><button type="button">=</button></td></tr>
+<tr><td><button type="button">7</button></td><td><button type="button">8</button></td><td><button type="button">9</button></td><td><button type="button">/</button></td></tr>
+<tr><td><button type="button">4</button></td><td><button type="button">5</button></td><td><button type="button">6</button></td><td><button type="button">*</button></td></tr>
+<tr><td><button type="button">1</button></td><td><button type="button">2</button></td><td><button type="button">3</button></td><td><button type="button">-</button></td></tr>
+<tr><td><button type="button">0</button></td><td><button type="button">+</button></td><td><button type="button">NONE</button></td><td><button type="button">NONE</button></td></tr>
+</table></div>
+<script>
+const display = document.getElementById('display');
+let calculated = false;
+function press(value) {
+    if (value === 'NONE') return;
+    if (value === 'C' || value === 'CE') {
+        display.value = '0'; calculated = false;
+    } else if (value === 'BACK') {
+        display.value = display.value.slice(0, -1) || '0'; calculated = false;
+    } else if (value === '=') {
+        try {
+            const expression = display.value;
+            if (!/^[0-9+*/.\s-]+$/.test(expression)) throw new Error('수식 오류');
+            const result = eval(expression);
+            if (!Number.isFinite(result)) throw new Error('계산 불가');
+            display.value = result;
+        } catch (error) { display.value = '오류'; }
+        calculated = true;
+    } else {
+        const digit = /^[0-9]$/.test(value);
+        if (display.value === '오류' || (calculated && digit) || (display.value === '0' && digit)) display.value = '';
+        display.value += value;
+        calculated = false;
+    }
+}
+for (const button of document.querySelectorAll('button')) {
+    button.onclick = function () { press(this.textContent); };
+}
+</script>
+</body>
+</html>
