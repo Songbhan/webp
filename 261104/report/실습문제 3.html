@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>계산기 만들기</title>
+<style>body { font-family: sans-serif; } </style>
+</head>
+<body>
+<h3>계산기 만들기</h3>
+<hr>
+<p>수식을 입력하고 &lt;Enter&gt;를 입력하세요.</p>
+<label>식 <input id="exp" type="text"></label><br>
+<label>값 <input id="result" type="text" readonly></label>
+<script>
+document.getElementById('exp').onkeydown = function (e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        try {
+            const expression = this.value;
+            if (!/^[0-9+*/().%\s-]+$/.test(expression)) throw new Error('잘못된 수식');
+            document.getElementById('result').value = eval(expression);
+        } catch (error) {
+            document.getElementById('result').value = '수식 오류';
+        }
+    }
+};
+</script>
+</body>
+</html>
