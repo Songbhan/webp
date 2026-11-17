@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>산수 문제를 풀어 봅시다.</title>
+<style>
+body { max-width: 40rem; }
+.row { margin: 0.35em 0; } .row label { display: inline-block; min-width: 4.5em; } .row input { width: 7em; } .wrong { text-decoration: line-through; } output { display:inline-block; min-width:2ch; }
+</style>
+</head>
+<body>
+<h3>산수 문제를 풀어 봅시다.</h3>
+<div>10초가 지나면 자동으로 채점됩니다. 다시 버튼을 누르면 새 문제가 나옵니다. 나눗셈은 정수 몫을 입력하세요.</div>
+<div>남은 시간 <span id="remaining">10</span>초</div><hr>
+<p class="row"><label for="answer1" data-answer="0"></label> <input type="text" inputmode="numeric" id="answer1" autocomplete="off"></p>
+<p class="row"><label for="answer2" data-answer="0"></label> <input type="text" inputmode="numeric" id="answer2" autocomplete="off"></p>
+<p class="row"><label for="answer3" data-answer="0"></label> <input type="text" inputmode="numeric" id="answer3" autocomplete="off"></p>
+<p class="row"><label for="answer4" data-answer="0"></label> <input type="text" inputmode="numeric" id="answer4" autocomplete="off"></p>
+<output id="score" aria-label="맞은 개수">0</output> <button type="button" id="again">다시</button>
+<script>
+
+const rows = Array.from(document.querySelectorAll('.row'));
+const score = document.getElementById('score');
+
+function grade() {
+    let correct = 0;
+    for (const row of rows) {
+        const label = row.querySelector('label');
+        const input = row.querySelector('input');
+        const value = input.value.trim();
+        const matches = /^[-+]?\d+$/.test(value) && Number(value) === Number(label.dataset.answer);
+        label.classList.toggle('wrong', !matches);
+        if (matches) correct++;
+    }
+    score.textContent = correct;
+}
+
+function nextProblems() {
+    const operations = ['+', '-', '*', '/'];
+    for (const row of rows) {
+        const label = row.querySelector('label');
+        const input = row.querySelector('input');
+        let expression;
+        let answer;
+        do {
+            const a = Math.floor(Math.random() * 20) + 1;
+            const b = Math.floor(Math.random() * 20) + 1;
+            const index = Math.floor(Math.random() * operations.length);
+            expression = a + operations[index] + b;
+            answer = [a + b, a - b, a * b, Math.trunc(a / b)][index];
+        } while (expression === label.textContent);
+        label.textContent = expression;
+        label.dataset.answer = answer;
+        label.classList.remove('wrong');
+        input.value = '';
+        input.readOnly = false;
+    }
+    score.textContent = '0';
+}
+
+const remaining = document.getElementById('remaining');
+let timerId;
+
+function startRound() {
+    clearInterval(timerId);
+    nextProblems();
+    const deadline = performance.now() + 10000;
+    remaining.textContent = '10';
+    timerId = setInterval(function () {
+        const seconds = Math.max(0, Math.ceil((deadline - performance.now()) / 1000));
+        remaining.textContent = seconds;
+        if (seconds === 0) {
+            clearInterval(timerId);
+            grade();
+            for (const row of rows) row.querySelector('input').readOnly = true;
+        }
+    }, 50);
+}
+document.getElementById('again').addEventListener('click', startRound);
+startRound();
+
+</script>
+</body>
+</html>

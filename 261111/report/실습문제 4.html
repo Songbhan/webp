@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>구글 Chrome 브라우저 감별</title>
+<style>
+body { max-width: 40rem; }
+
+</style>
+</head>
+<body>
+<h3>구글 Chrome 브라우저 감별</h3><hr><p>브라우저 정보를 확인하여 구글 Chrome인지 판별합니다.</p>
+<script>
+
+window.addEventListener('load', function () {
+    const brands = navigator.userAgentData?.brands;
+    const agent = navigator.userAgent;
+    const isChrome = brands?.length
+        ? brands.some(({ brand }) => brand === 'Google Chrome')
+        : /\bCriOS\//.test(agent) ||
+          (navigator.vendor === 'Google Inc.' && /\bChrome\//.test(agent) &&
+          !/\b(Edg|EdgA|OPR|SamsungBrowser|Whale|Vivaldi|YaBrowser)\//.test(agent));
+    alert(isChrome ? '구글 Chrome 브라우저입니다.' : '구글 Chrome 브라우저가 아닙니다.');
+});
+
+</script>
+</body>
+</html>

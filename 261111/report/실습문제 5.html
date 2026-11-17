@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>div 태그에 시계 만들기</title>
+<style>
+body { max-width: 40rem; }
+#clock { width: 9em; padding: 2px 5px; border: 1px solid #9daab3; background: #edf5fa; }
+</style>
+</head>
+<body>
+<h3>div 태그에 시계 만들기</h3><hr><div id="clock"></div>
+<script>
+
+const clock = document.getElementById('clock');
+let timerId;
+
+function updateClock() {
+    const now = new Date();
+    clock.textContent = now.toLocaleTimeString('ko-KR');
+    timerId = setTimeout(updateClock, 1000 - now.getMilliseconds());
+}
+
+window.addEventListener('pagehide', function () {
+    clearTimeout(timerId);
+});
+window.addEventListener('pageshow', updateClock);
+
+</script>
+</body>
+</html>

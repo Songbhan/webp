@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>div 태그에 시계 만들기</title>
+<style>
+body { max-width: 40rem; }
+#clock { width: 9em; padding: 2px 5px; border: 1px solid #9daab3; background: #edf5fa; }
+#clock { cursor: pointer; } #clock[aria-pressed="true"] { color: #6d747b; }
+</style>
+</head>
+<body>
+<h3>div 태그에 시계 만들기</h3>
+<p>시계를 클릭하면 멈추고 다시 클릭하면 현재 시각부터 움직입니다.</p><hr>
+<div id="clock" role="button" tabindex="0" aria-pressed="false"></div>
+<script>
+
+const clock = document.getElementById('clock');
+let timerId = null;
+
+function updateClock() {
+    clock.textContent = new Date().toLocaleTimeString('ko-KR');
+}
+
+function startClock() {
+    updateClock();
+    timerId = setInterval(updateClock, 1000);
+}
+
+function toggleClock() {
+    if (timerId === null) {
+        clock.setAttribute('aria-pressed', 'false');
+        startClock();
+    } else {
+        clearInterval(timerId);
+        timerId = null;
+        clock.setAttribute('aria-pressed', 'true');
+    }
+}
+
+clock.addEventListener('click', toggleClock);
+clock.addEventListener('keydown', function (event) {
+    if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        toggleClock();
+    }
+});
+startClock();
+
+</script>
+</body>
+</html>

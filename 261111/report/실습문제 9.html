@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>screen 객체 활용</title>
+<style>
+body { max-width: 40rem; }
+
+</style>
+</head>
+<body>
+<h3>screen 객체 활용</h3><hr><p>화면의 너비가 1280픽셀 미만이거나 높이가 1024픽셀 미만이면 경고창을 출력합니다.</p>
+<script>
+
+window.addEventListener('load', function () {
+    if (screen.width < 1280 || screen.height < 1024) {
+        alert('스크린 해상도가 낮습니다!');
+    }
+});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>사이트 접속</title>
+<style>
+body { max-width: 40rem; }
+
+</style>
+</head>
+<body>
+<h3>옵션 선택으로 사이트 접속</h3>
+<p>옵션을 선택하면 같은 창에서 사이트를 바꿉니다.</p><hr>
+<p><label for="site">접속할 사이트</label></p>
+<select id="site">
+    <option value="">사이트 선택</option>
+    <option value="https://www.naver.com/">네이버</option>
+    <option value="https://www.google.co.kr/">구글</option>
+    <option value="https://www.oracle.com/">오라클</option>
+</select>
+<p id="status" role="status"></p>
+<script>
+
+const select = document.getElementById('site');
+const statusMessage = document.getElementById('status');
+
+select.addEventListener('change', function () {
+    if (!select.value) return;
+    const popup = window.open(select.value, 'sharedSite', 'popup,width=640,height=480');
+    statusMessage.textContent = popup ? '' : '브라우저에서 팝업을 허용한 뒤 다시 선택하세요.';
+    if (popup) popup.focus();
+    select.selectedIndex = 0;
+});
+
+</script>
+</body>
+</html>
