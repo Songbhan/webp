@@ -1,0 +1,676 @@
+<!doctype html>
+<html lang="ko">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="소프트웨어학과 2학년 학생의 수업과 팀 프로젝트 포트폴리오">
+  <title>소프트웨어학과 학생 포트폴리오</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #fafbfc;
+      --ink: #172639;
+      --muted: #4e6071;
+      --line: #dce4eb;
+      --accent: #174f75;
+      font-family: system-ui, -apple-system, "Malgun Gothic", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      line-height: 1.65;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 4px;
+    }
+
+    .wrap {
+      width: min(1140px, calc(100% - 88px));
+      margin-inline: auto;
+    }
+
+    .skip {
+      position: absolute;
+      left: 12px;
+      top: 12px;
+      transform: translateY(-200%);
+      padding: 8px;
+      background: white;
+    }
+
+    .skip:focus {
+      transform: none;
+      z-index: 1;
+    }
+
+    .top,
+    .bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      padding-block: 21px;
+      font-size: .9rem;
+    }
+
+    .top {
+      border-bottom: 1px solid var(--line);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 750;
+    }
+
+    .monogram {
+      display: grid;
+      place-items: center;
+      width: 32px;
+      height: 32px;
+      background: var(--ink);
+      color: white;
+      border-radius: 9px;
+      font-family: Georgia, serif;
+      font-style: italic;
+      font-size: 1.2rem;
+    }
+
+    nav {
+      display: flex;
+      gap: clamp(12px, 4vw, 34px);
+      color: var(--muted);
+    }
+
+    nav a:hover,
+    .bottom a:hover {
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: 4px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 260px) minmax(0, 1fr);
+      align-items: center;
+      gap: clamp(24px, 6vw, 78px);
+      padding: clamp(26px, 5vw, 58px);
+      margin-block: clamp(28px, 5vw, 64px) 30px;
+      background: #edf3f7;
+      border: 1px solid #e0e8ef;
+      border-radius: 22px;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    .label {
+      color: var(--accent);
+      font-size: .84rem;
+      font-weight: 730;
+    }
+
+    .dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      margin-right: 5px;
+      border-radius: 50%;
+      background: currentColor;
+      vertical-align: .12em;
+    }
+
+    h1 {
+      margin-block: 11px 14px;
+      font-size: clamp(1.65rem, 3.25vw, 2.8rem);
+      line-height: 1.23;
+      letter-spacing: -.055em;
+      font-weight: 750;
+    }
+
+    .lead,
+    .section-head p,
+    dd {
+      color: var(--muted);
+    }
+
+    .lead {
+      font-size: clamp(.96rem, 1.7vw, 1.08rem);
+    }
+
+    .hero-links {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    .primary,
+    .github-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 9px 14px;
+      border: 1px solid var(--accent);
+      border-radius: 8px;
+      font-size: .87rem;
+      font-weight: 650;
+    }
+
+    .primary {
+      background: var(--accent);
+      color: white;
+    }
+
+    .primary:hover {
+      background: #103c59;
+    }
+
+    .github-link {
+      color: var(--accent);
+      background: #ffffffa0;
+    }
+
+    .github-link:hover {
+      background: white;
+    }
+
+    .profile {
+      width: 100%;
+      margin: 0;
+      text-align: center;
+    }
+
+    .profile img {
+      display: block;
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: 16px;
+      background: #dbe7e8;
+    }
+
+    .profile figcaption {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: .73rem;
+    }
+
+    .profile figcaption a {
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .section {
+      border-top: 1px solid var(--line);
+      padding-block: clamp(32px, 6vw, 70px);
+      scroll-margin-top: 16px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    h2 {
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      line-height: 1.2;
+      letter-spacing: -.06em;
+    }
+
+    .section-head p {
+      margin-top: 8px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-block: 22px 16px;
+    }
+
+    button {
+      cursor: pointer;
+      font: inherit;
+      color: var(--ink);
+      border: 1px solid #c7c8d1;
+      border-radius: 99px;
+      background: transparent;
+      padding: 5px 13px;
+      font-size: .84rem;
+    }
+
+    button:hover {
+      background: #e9f0f5;
+    }
+
+    button[aria-pressed="true"] {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: white;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+      gap: clamp(16px, 3vw, 28px);
+      margin-top: 16px;
+    }
+
+    article {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .project-art {
+      display: grid;
+      place-items: center;
+      min-height: 185px;
+      aspect-ratio: 2 / 1;
+      padding: 12px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .class-art {
+      background: linear-gradient(140deg, #ecf3fb, #c9dcec);
+    }
+
+    .team-art {
+      background: linear-gradient(140deg, #e8f2ed, #c3dfd3);
+    }
+
+    .mock {
+      width: min(88%, 300px);
+      border: 1px solid #77738e44;
+      border-radius: 9px;
+      padding: 12px 14px;
+      color: #39364a;
+      background: #fcfbff;
+      box-shadow: 0 12px 24px #3e365629;
+      font-size: clamp(.62rem, 1.2vw, .77rem);
+    }
+
+    .mock-bar,
+    .mock-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mock-bar {
+      justify-content: space-between;
+      padding-bottom: 6px;
+    }
+
+    .mock-bar span,
+    .mock-row small {
+      color: #535669;
+    }
+
+    .mock-row {
+      border-top: 1px solid #e6e3ef;
+      padding-block: 4px;
+    }
+
+    .mock-row i {
+      display: grid;
+      place-items: center;
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+      border: 1px solid #a59cc7;
+      border-radius: 3px;
+      font-style: normal;
+    }
+
+    .mock-row small {
+      margin-left: auto;
+      white-space: nowrap;
+    }
+
+    .mock-tags {
+      display: flex;
+      gap: 9px;
+      border-top: 1px solid #dce9e3;
+      padding-block: 7px;
+      font-weight: 650;
+    }
+
+    .mock-tiles {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+
+    .mock-tiles div {
+      min-height: 38px;
+      border-radius: 5px;
+      background: #e5f1eb;
+      padding: 6px;
+    }
+
+    .card-body {
+      padding: clamp(18px, 3vw, 26px);
+    }
+
+    .type {
+      color: var(--accent);
+      font-size: .77rem;
+      font-weight: 720;
+    }
+
+    h3 {
+      margin-block: 4px 5px;
+      font-size: clamp(1.14rem, 2.6vw, 1.45rem);
+      letter-spacing: -.04em;
+    }
+
+    .card-body>p:not(.type) {
+      color: var(--muted);
+    }
+
+    details {
+      margin-top: 16px;
+      border-top: 1px solid var(--line);
+      padding-top: 12px;
+      font-size: .9rem;
+    }
+
+    summary {
+      cursor: pointer;
+      color: var(--accent);
+      font-weight: 680;
+    }
+
+    dl {
+      margin: 12px 0 0;
+    }
+
+    dt {
+      font-weight: 650;
+    }
+
+    dd {
+      margin: 2px 0 10px;
+    }
+
+    .profile-details {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 20px;
+      padding-bottom: 28px;
+    }
+
+    .info {
+      padding: clamp(18px, 4vw, 31px);
+      border: 1px solid var(--line);
+      border-radius: 15px;
+      background: white;
+    }
+
+    .info h2 {
+      font-size: clamp(1.35rem, 3vw, 1.9rem);
+      margin-bottom: 12px;
+    }
+
+    .info p {
+      color: var(--muted);
+    }
+
+    .info a {
+      color: var(--accent);
+      text-decoration: underline;
+      text-underline-offset: .24em;
+    }
+
+    .contacts {
+      margin: 0;
+    }
+
+    .contacts div {
+      display: grid;
+      grid-template-columns: 5rem minmax(0, 1fr);
+      gap: 4px 10px;
+      padding-block: 7px;
+    }
+
+    .contacts div+div {
+      border-top: 1px solid var(--line);
+    }
+
+    .contacts dd {
+      margin: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .bottom {
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+    }
+
+    @media (max-width: 790px) {
+      .wrap {
+        width: calc(100% - 48px);
+      }
+
+      .hero {
+        grid-template-columns: minmax(0, 180px) minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 620px) {
+      .wrap {
+        width: calc(100% - 36px);
+      }
+
+      .hero,
+      .grid,
+      .profile-details {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        gap: 20px;
+        text-align: center;
+      }
+
+      .profile {
+        width: min(100%, 190px);
+        margin-inline: auto;
+      }
+
+      .hero-links {
+        justify-content: center;
+      }
+
+      .top {
+        flex-wrap: wrap;
+      }
+
+      .wide {
+        display: none;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <a class="skip" href="#main">본문으로 이동</a>
+  <header class="wrap top">
+    <a class="brand" href="#"><span class="monogram" aria-hidden="true">S</span> 한송빈</a>
+    <nav aria-label="주 메뉴"><a href="#projects">프로젝트</a><a href="#about">소개</a><a href="#contact">연락처</a></nav>
+  </header>
+  <main id="main" class="wrap">
+    <section class="hero" aria-labelledby="intro">
+      <figure class="profile">
+        <!-- 본인 사진을 넣으려면 아래 src 값을 사진 파일명으로 바꾸세요. 사진 파일은 이 HTML과 같은 폴더에 두고, alt 문구를 수정한 뒤 고양이 사진 출처(figcaption)를 지우세요. -->
+        <img id="profile-photo"
+          src="한송빈.jpg"
+          alt="프로필 자리를 채운 고양이 사진" width="640" height="640">
+        <figcaption><a href="https://unsplash.com/photos/omgGyoQgPh0">기본 사진 · Welcome / Unsplash</a></figcaption>
+      </figure>
+      <div class="hero-copy">
+        <p class="label"><span class="dot"></span> 現 소프트웨어학과 2학년</p>
+        <h1 id="intro">안녕하세요, 한송빈입니다.</h1>
+        <p class="lead">경성대학교 소프트웨어학과에서 배우고,<br class="wide"> 수업과 팀 프로젝트를 통해 직접 만들어 봅니다.</p>
+        <div class="hero-links">
+          <a class="primary" href="#projects">프로젝트 보기 <span aria-hidden="true">↓</span></a>
+          <a class="github-link" href="https://github.com/Songbhan">GitHub <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </section>
+    <section id="projects" class="section" aria-labelledby="work">
+      <div class="section-head">
+        <div>
+          <h2 id="work">프로젝트</h2>
+          <p>수업 과제와 팀 작업에서 맡은 역할, 구현 과정, 배운 점을 정리합니다.</p>
+        </div>
+      </div>
+      <div class="filters" aria-label="프로젝트 분류" hidden>
+        <button type="button" data-filter="all" aria-pressed="true">전체</button>
+        <button type="button" data-filter="class" aria-pressed="false">수업 과제</button>
+        <button type="button" data-filter="team" aria-pressed="false">팀 프로젝트</button>
+      </div>
+      <div class="grid">
+        <article data-category="class">
+          <div class="project-art class-art" aria-hidden="true">
+            <div class="mock">
+              <div class="mock-bar"><b>과제 일정</b><span>이번 주</span></div>
+              <div class="mock-row"><i>✓</i><span>자료구조 실습</span><small>완료</small></div>
+              <div class="mock-row"><i></i><span>웹 프로그래밍 과제</span><small>진행 중</small></div>
+              <div class="mock-row"><i></i><span>팀 발표 준비</span></div>
+            </div>
+          </div>
+          <div class="card-body">
+            <p class="type">수업 과제 · 예시</p>
+            <h3>과제 일정 관리</h3>
+            <p>마감일과 완료 여부를 한 화면에서 확인하는 일정 관리 페이지.</p>
+            <details>
+              <summary>구현 과정 보기</summary>
+              <dl>
+                <dt>맡은 역할</dt>
+                <dd>입력 폼과 일정 목록 구현</dd>
+                <dt>구현 과정</dt>
+                <dd>일정 데이터를 배열로 관리하고, 완료 상태에 따라 목록을 필터링</dd>
+                <dt>배운 점</dt>
+                <dd>화면을 그리는 코드와 데이터를 바꾸는 코드를 나누면 수정하기 쉬움</dd>
+              </dl>
+            </details>
+          </div>
+        </article>
+        <article data-category="team">
+          <div class="project-art team-art" aria-hidden="true">
+            <div class="mock">
+              <div class="mock-bar"><b>스터디 자료실</b><span>자료 모아보기</span></div>
+              <div class="mock-tags">전체 <span>웹</span><span>알고리즘</span></div>
+              <div class="mock-tiles">
+                <div>웹 실습 노트</div>
+                <div>알고리즘 정리</div>
+              </div>
+            </div>
+          </div>
+          <div class="card-body">
+            <p class="type">팀 프로젝트 · 예시</p>
+            <h3>스터디 자료 공유 공간</h3>
+            <p>팀원이 올린 학습 자료를 주제별로 모아 보는 웹 페이지.</p>
+            <details>
+              <summary>구현 과정 보기</summary>
+              <dl>
+                <dt>맡은 역할</dt>
+                <dd>자료 목록 화면과 주제 필터 구현</dd>
+                <dt>구현 과정</dt>
+                <dd>팀원과 자료의 입력 항목을 정의하고, 게시 흐름을 함께 점검</dd>
+                <dt>배운 점</dt>
+                <dd>팀에서 데이터 형식을 일찍 합의하면 화면을 연결할 때 수정이 줄어듦</dd>
+              </dl>
+            </details>
+          </div>
+        </article>
+      </div>
+    </section>
+    <div class="profile-details">
+      <section id="about" class="section info">
+        <h2>소개</h2>
+        <p>경성대학교 소프트웨어학과 2023764047 한송빈입니다.</p>
+      </section>
+      <section id="contact" class="section info">
+        <h2>연락처</h2>
+        <dl class="contacts">
+          <div>
+            <dt>전화번호</dt>
+            <dd><a href="tel:01093170384">010-9317-0384</a></dd>
+          </div>
+          <div>
+            <dt>이메일</dt>
+            <dd><a href="mailto:hansb0384@gmail.com">hansb0384@gmail.com</a></dd>
+          </div>
+          <div>
+            <dt>GitHub</dt>
+            <dd><a href="https://github.com/Songbhan">Songbhan</a></dd>
+          </div>
+        </dl>
+      </section>
+    </div>
+  </main>
+  <footer class="wrap bottom"><span>한송빈 · 포트폴리오</span><a href="#">맨 위로 <span aria-hidden="true">↑</span></a></footer>
+  <script>
+    const filters = document.querySelector(".filters");
+    const buttons = filters.querySelectorAll("button");
+    const projects = document.querySelectorAll("[data-category]");
+
+    filters.hidden = false;
+    for (const button of buttons) {
+      button.addEventListener("click", () => {
+        const category = button.dataset.filter;
+        for (const option of buttons) {
+          option.setAttribute("aria-pressed", String(option === button));
+        }
+        for (const project of projects) {
+          project.hidden = category !== "all" && project.dataset.category !== category;
+        }
+      });
+    }
+  </script>
+</body>
+
+</html>
