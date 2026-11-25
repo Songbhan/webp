@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base target="_top">
+  <title>여행 가계부</title>
+  <style>
+    :root {
+      color-scheme: light;
+      font: 16px system-ui, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      color: #172e27;
+      background: #edf4ee;
+      accent-color: #235747;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; padding: clamp(16px, 4vw, 48px) 12px; }
+
+    main {
+      margin: auto;
+      max-width: 530px;
+      background: #fff;
+      border: 1px solid #d6e5d9;
+      border-radius: 22px;
+      overflow: hidden;
+      box-shadow: 0 16px 46px #21433814;
+    }
+
+    h1 {
+      margin: 0;
+      padding: 25px 20px;
+      font-size: clamp(30px, 8vw, 43px);
+      letter-spacing: -.065em;
+      background: #174b42;
+      color: #fff;
+    }
+
+    form { padding: 18px clamp(14px, 4vw, 28px) 22px; }
+    fieldset { padding: 0; margin: 0; min-width: 0; border: 0; }
+    .fields { display: grid; gap: 14px; }
+
+    .modes {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      padding: 4px;
+      gap: 4px;
+      border-radius: 13px;
+      background: #e5efe9;
+    }
+
+    .modes label { position: relative; }
+    .modes input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+
+    .modes span {
+      display: grid;
+      place-items: center;
+      min-height: 44px;
+      padding: 5px 2px;
+      border-radius: 9px;
+      font-size: .88rem;
+      font-weight: 700;
+    }
+
+    .modes input:checked + span { background: #174b42; color: #fff; }
+
+    .modes input:focus-visible + span, :focus-visible {
+      outline: 2px solid #37856c;
+      outline-offset: 2px;
+    }
+
+    .pair {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      gap: 12px;
+    }
+
+    .label { display: block; margin-bottom: 5px; font-size: .9rem; font-weight: 700; }
+    input, select, textarea, button { font: inherit; color: inherit; }
+
+    input:not([type=radio], [type=checkbox]), select, textarea {
+      width: 100%;
+      min-width: 0;
+      min-height: 46px;
+      padding: 9px 10px;
+      border: 1px solid #bcccbd;
+      border-radius: 10px;
+      background: #f8fbf8;
+    }
+
+    textarea { display: block; min-height: 65px; resize: vertical; }
+    .custom { margin-top: 8px; }
+    .muted { color: #536a5f; font-weight: 400; }
+    .check { display: flex; gap: 7px; align-items: center; min-height: 35px; font-size: .9rem; }
+    .check input { width: 18px; height: 18px; }
+
+    button {
+      width: 100%;
+      min-height: 50px;
+      margin-top: 12px;
+      border: 0;
+      border-radius: 11px;
+      color: #fff;
+      background: #174b42;
+      cursor: pointer;
+      font-weight: 750;
+    }
+
+    button:disabled { opacity: .65; cursor: wait; }
+    #status { margin: 10px 0 0; min-height: 1.4em; font-size: .88rem; overflow-wrap: anywhere; }
+    #status[data-state="error"] { color: #962d3c; }
+    #status a { color: #174b42; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>여행 가계부</h1>
+    <form id="ledger">
+      <fieldset id="fields" class="fields" disabled>
+        <div class="modes" role="radiogroup" aria-label="거래 구분">
+          <label>
+            <input type="radio" name="type" value="현금 소비" checked>
+            <span>소비</span>
+          </label>
+          <label>
+            <input type="radio" name="type" value="수입">
+            <span>수입</span>
+          </label>
+          <label>
+            <input type="radio" name="type" value="ATM 인출">
+            <span>ATM 인출</span>
+          </label>
+        </div>
+
+        <div class="pair">
+          <div>
+            <label class="label" for="date">날짜</label>
+            <input id="date" type="date" min="1900-01-01" max="9999-12-31" required>
+          </div>
+          <div>
+            <label class="label" for="currency">통화</label>
+            <select id="currency">
+              <option value="JPY">엔화 (¥)</option>
+              <option value="KRW">원화 (₩)</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="category-field">
+          <label class="label" for="category">카테고리</label>
+          <select id="category" required></select>
+
+          <div id="custom-field" class="custom" hidden>
+            <label class="label" for="custom">새 카테고리</label>
+            <input id="custom" type="text" maxlength="30" placeholder="예: 숙소">
+          </div>
+        </div>
+
+        <div id="payment-field">
+          <label class="label" for="payment">결제수단</label>
+          <select id="payment">
+            <option value="현금">현금</option>
+            <option value="카드">카드</option>
+          </select>
+        </div>
+
+        <div>
+          <label id="amount-label" class="label" for="amount">금액 (¥)</label>
+          <input id="amount" type="text" inputmode="numeric" maxlength="16"
+                 placeholder="1500" pattern="[0-9,]+" required>
+        </div>
+
+        <div>
+          <label class="label" for="memo">메모 <span class="muted">(선택)</span></label>
+          <textarea id="memo" rows="2" maxlength="300" placeholder="예: 편의점에서 간식"></textarea>
+        </div>
+
+        <div>
+          <label class="check"><input id="correction" type="checkbox"> 재입력</label>
+          <div id="recent-field" hidden>
+            <label class="label" for="recent">수정할 기록</label>
+            <select id="recent" disabled></select>
+          </div>
+        </div>
+      </fieldset>
+
+      <button id="save" type="submit" disabled>저장</button>
+      <p id="status" role="status" aria-live="polite"></p>
+    </form>
+  </main>
+
+  <script>
+    const form = document.querySelector('#ledger');
+    const fields = document.querySelector('#fields');
+    const byId = (id) => document.getElementById(id);
+    const date = byId('date');
+    const currency = byId('currency');
+    const payment = byId('payment');
+    const category = byId('category');
+    const custom = byId('custom');
+    const amount = byId('amount');
+    const memo = byId('memo');
+    const correction = byId('correction');
+    const recent = byId('recent');
+    const save = byId('save');
+    const status = byId('status');
+    const addCategory = '+';
+
+    let records = [];
+    let categories = [];
+    let pending = null;
+    let loadingRecent = false;
+    let recentRequest = 0;
+    let beforeCorrection = null;
+
+    function today() {
+      const now = new Date();
+      return [now.getFullYear(), now.getMonth() + 1, now.getDate()]
+        .map((number) => String(number).padStart(2, '0')).join('-');
+    }
+
+    function setStatus(message, state = '') {
+      status.textContent = message;
+      status.dataset.state = state;
+    }
+
+    function refreshFields() {
+      const type = form.elements.type.value;
+      const expense = type === '현금 소비';
+      const adding = expense && category.value === addCategory;
+
+      byId('category-field').hidden = !expense;
+      category.disabled = !expense;
+      category.required = expense;
+
+      byId('payment-field').hidden = !expense;
+      payment.disabled = !expense;
+
+      byId('custom-field').hidden = !adding;
+      custom.disabled = !adding;
+      custom.required = adding;
+
+      byId('amount-label').textContent =
+        (type === 'ATM 인출' ? '인출액' : '금액') + (currency.value === 'JPY' ? ' (¥)' : ' (₩)');
+
+      byId('recent-field').hidden = !correction.checked;
+      recent.required = correction.checked && !loadingRecent;
+      recent.disabled = !correction.checked || loadingRecent;
+
+      if (!pending) {
+        save.disabled = fields.disabled || (correction.checked && (loadingRecent || !recent.value));
+        save.textContent = correction.checked ? '수정 저장' : '저장';
+      }
+    }
+
+    function drawCategories(selected = '') {
+      category.replaceChildren(new Option('카테고리 선택', ''));
+
+      for (const name of categories) {
+        category.add(new Option(name, 'category:' + name));
+      }
+
+      category.add(new Option('+ 카테고리 추가', addCategory));
+      category.value = selected ? 'category:' + selected : '';
+
+      if (selected && !category.value) {
+        category.value = addCategory;
+        custom.value = selected;
+      }
+
+      refreshFields();
+    }
+
+    function loadData() {
+      if (typeof google === 'undefined' || !google.script?.run) {
+        setStatus('Apps Script 웹 앱 주소에서 열어 주세요.', 'error');
+        return;
+      }
+
+      google.script.run
+        .withSuccessHandler((result) => {
+          categories = result.categories;
+          fields.disabled = false;
+          drawCategories();
+        })
+        .withFailureHandler(() => {
+          setStatus('가계부를 열 수 없어요. 시트 연결과 권한을 확인해 주세요.', 'error');
+        })
+        .getLedgerData(false);
+    }
+
+    function loadRecent() {
+      const request = ++recentRequest;
+      loadingRecent = correction.checked;
+      records = [];
+      recent.replaceChildren(new Option(loadingRecent ? '불러오는 중…' : '기록 선택', ''));
+      refreshFields();
+
+      if (!loadingRecent) {
+        setStatus('');
+        return;
+      }
+
+      google.script.run
+        .withSuccessHandler((result) => {
+          if (request !== recentRequest) return;
+
+          loadingRecent = false;
+          records = result.recent;
+          recent.replaceChildren(new Option(records.length ? '기록 선택' : '수정할 기록이 없어요', ''));
+
+          for (const record of records) {
+            const symbol = record.currency === 'JPY' ? '¥' : '₩';
+            const description = (record.memo || record.category || '').slice(0, 24);
+            const typeLabel = record.type === '현금 소비' ? '소비' : record.type;
+            const label = [
+              record.date,
+              typeLabel,
+              record.payment,
+              symbol + record.amount.toLocaleString('ko-KR'),
+              description
+            ].filter(Boolean).join(' · ');
+
+            recent.add(new Option(label, record.id));
+          }
+
+          refreshFields();
+        })
+        .withFailureHandler(() => {
+          if (request !== recentRequest) return;
+
+          loadingRecent = false;
+          recent.replaceChildren(new Option('불러오기 실패', ''));
+          setStatus('기록을 불러오지 못했어요. 재입력을 다시 선택해 주세요.', 'error');
+          refreshFields();
+        })
+        .getLedgerData(true);
+    }
+
+    recent.addEventListener('change', () => {
+      const record = records.find((item) => item.id === recent.value);
+      if (!record) return refreshFields();
+
+      form.elements.type.value = record.type;
+      date.value = record.date;
+      currency.value = record.currency;
+      payment.value = record.payment || '현금';
+      amount.value = String(record.amount);
+      memo.value = record.memo;
+      custom.value = '';
+      drawCategories(record.category);
+      setStatus('');
+    });
+
+    form.addEventListener('change', (event) => {
+      if (event.target === correction) {
+        if (correction.checked) {
+          beforeCorrection = {
+            type: form.elements.type.value,
+            date: date.value,
+            currency: currency.value,
+            payment: payment.value,
+            category: category.value,
+            custom: custom.value,
+            amount: amount.value,
+            memo: memo.value
+          };
+        } else if (beforeCorrection) {
+          form.elements.type.value = beforeCorrection.type;
+          date.value = beforeCorrection.date;
+          currency.value = beforeCorrection.currency;
+          payment.value = beforeCorrection.payment;
+          category.value = beforeCorrection.category;
+          custom.value = beforeCorrection.custom;
+          amount.value = beforeCorrection.amount;
+          memo.value = beforeCorrection.memo;
+          beforeCorrection = null;
+        }
+
+        loadRecent();
+      } else {
+        refreshFields();
+      }
+
+      if (event.target === category && category.value === addCategory) custom.focus();
+    });
+
+    function submitPending() {
+      fields.disabled = true;
+      save.disabled = true;
+      save.textContent = '저장 중…';
+      setStatus('시트에 저장 중이에요.');
+
+      google.script.run
+        .withSuccessHandler((result) => {
+          const edited = Boolean(pending.source);
+          pending = null;
+          fields.disabled = false;
+
+          if (!result.ok) {
+            refreshFields();
+            setStatus(result.message, 'error');
+            return;
+          }
+
+          const selectedType = form.elements.type.value;
+          const selectedCurrency = currency.value;
+          form.reset();
+          beforeCorrection = null;
+          records = [];
+          form.elements.type.value = selectedType;
+          currency.value = selectedCurrency;
+          date.value = today();
+          categories = result.categories;
+          drawCategories();
+
+          const message = (edited ? '수정 저장 완료' : '저장 완료') + ' · ' +
+            result.date + ' · ' + result.dayCount + '/40건';
+
+          setStatus(result.reportReady ? message : message + ' · 시트 집계를 갱신하지 못했어요.',
+            result.reportReady ? '' : 'error');
+
+          const link = document.createElement('a');
+          link.href = result.rowUrl;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          link.textContent = '저장한 행 열기';
+          status.append(' · ', link);
+          amount.focus();
+        })
+        .withFailureHandler(() => {
+          save.disabled = false;
+          save.textContent = '같은 요청 다시 확인';
+          setStatus('저장 완료 여부를 확인하지 못했어요. 같은 요청을 다시 보내 결과를 확인할 수 있어요.', 'error');
+        })
+        .saveLedgerEntry(pending);
+    }
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (save.disabled) return;
+      if (pending) return submitPending();
+
+      const type = form.elements.type.value;
+      const entryCategory = type === '현금 소비'
+        ? (category.value === addCategory ? custom.value.trim() : category.value.slice(9))
+        : '';
+
+      const rawAmount = amount.value.trim();
+      const amountValue = Number(rawAmount.replaceAll(',', ''));
+
+      if (!/^(?:[0-9]+|[0-9]{1,3}(?:,[0-9]{3})+)$/.test(rawAmount) ||
+          !Number.isSafeInteger(amountValue) || amountValue < 1 || amountValue > 999999999999) {
+        setStatus('금액은 1~999,999,999,999 사이의 정수로 입력해 주세요.', 'error');
+        amount.focus();
+        return;
+      }
+
+      if (type === '현금 소비' && !entryCategory) {
+        setStatus('카테고리를 선택하거나 이름을 입력해 주세요.', 'error');
+        (category.value === addCategory ? custom : category).focus();
+        return;
+      }
+
+      if (correction.checked && !recent.value) {
+        setStatus('수정할 기록을 선택해 주세요.', 'error');
+        return;
+      }
+
+      pending = {
+        id: crypto.randomUUID(),
+        source: correction.checked ? recent.value : '',
+        date: date.value,
+        type,
+        currency: currency.value,
+        category: entryCategory,
+        payment: type === '현금 소비' ? payment.value : '',
+        amount: amountValue,
+        memo: memo.value
+      };
+
+      submitPending();
+    });
+
+    date.value = today();
+    loadData();
+  </script>
+</body>
+</html>
