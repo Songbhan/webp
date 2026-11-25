@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <title>11/25 저녁 신청받기</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 24px 16px;
+      display: grid;
+      place-items: center;
+      background: #f7f3eb;
+      color: #29251f;
+      font: 16px/1.5 system-ui, sans-serif;
+    }
+
+    main {
+      width: min(100%, 440px);
+      padding: clamp(22px, 6vw, 36px);
+      border: 1px solid #e4dbcd;
+      border-radius: 20px;
+      background: #fffdf9;
+    }
+
+    h1, h2 { margin: 0; line-height: 1.25; }
+    h1 { font-size: clamp(24px, 6vw, 32px); }
+    h2 { font-size: 24px; }
+
+    form { margin-top: 26px; }
+    label { display: block; margin-bottom: 6px; font-weight: 650; }
+    label span { color: #62584e; font-size: 14px; font-weight: 400; }
+
+    input, textarea {
+      display: block;
+      width: 100%;
+      margin-bottom: 18px;
+      padding: 10px 12px;
+      border: 1px solid #9c9081;
+      border-radius: 8px;
+      background: #fff;
+      color: inherit;
+      font: inherit;
+    }
+
+    textarea { min-height: 100px; resize: vertical; }
+
+    button {
+      width: 100%;
+      min-height: 46px;
+      padding: 10px 16px;
+      border: 0;
+      border-radius: 8px;
+      background: #843c27;
+      color: #fff;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:disabled { opacity: .7; cursor: wait; }
+    :focus-visible { outline: 2px solid #843c27; outline-offset: 3px; }
+    #error { margin: 12px 0 0; color: #a12d25; }
+    #error:empty { margin: 0; }
+    #done { padding: 20px 0; text-align: center; }
+  </style>
+</head>
+<body>
+  <main>
+    <div id="application">
+      <h1>11/25 저녁 신청받기</h1>
+      <form id="application-form">
+        <label for="name">이름</label>
+        <input id="name" name="name" autocomplete="name" maxlength="100" required>
+
+        <label for="food">음식</label>
+        <input id="food" name="food" maxlength="100" required>
+
+        <label for="comment">하고싶은말 <span>(선택)</span></label>
+        <textarea id="comment" name="comment" rows="3" maxlength="2000"></textarea>
+
+        <button id="submit-button" type="submit">확인</button>
+        <p id="error" role="alert"></p>
+      </form>
+    </div>
+
+    <section id="done" hidden>
+      <h2 id="confirmation" tabindex="-1">답장 감사합니다.</h2>
+    </section>
+  </main>
+
+  <script>
+    const form = document.getElementById('application-form');
+    const submitButton = document.getElementById('submit-button');
+    const error = document.getElementById('error');
+
+    form.addEventListener('submit', event => {
+      event.preventDefault();
+      if (submitButton.disabled) return;
+
+      const name = form.elements.namedItem('name').value.trim();
+      const food = form.elements.namedItem('food').value.trim();
+      const comment = form.elements.namedItem('comment').value.trim();
+
+      if (!name || !food) {
+        error.textContent = '이름과 음식을 입력해 주세요.';
+        form.elements.namedItem(name ? 'food' : 'name').focus();
+        return;
+      }
+
+      error.textContent = '';
+      submitButton.disabled = true;
+      submitButton.textContent = '저장 중…';
+
+      google.script.run
+        .withSuccessHandler(() => {
+          form.reset();
+          document.getElementById('application').hidden = true;
+          document.getElementById('done').hidden = false;
+          document.getElementById('confirmation').focus();
+        })
+        .withFailureHandler(() => {
+          error.textContent = '저장에 실패했습니다. 잠시 후 다시 시도해 주세요.';
+          submitButton.disabled = false;
+          submitButton.textContent = '확인';
+        })
+        .saveApplication({ name, food, comment });
+    });
+  </script>
+</body>
+</html>
